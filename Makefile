@@ -4,7 +4,7 @@ install:
 	python -m pip install -r requirements.txt
 
 run:
-	python -m flask --app app.app run
+	python -m flask --app app.app run --debug
 
 venv:
 	python3 -m venv .venv
