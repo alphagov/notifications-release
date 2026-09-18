@@ -97,6 +97,7 @@ def repos():
 def repo_commits(owner, repo):
     require_allowed_repo(owner, repo)
     commits = github_client.list_commits(session["github_token"], owner, repo)
+    environment_statuses = get_status_for_all_environments()
 
-    return render_template("commits.html", user=session.get("github_user"), owner=owner, repo=repo, commits=commits)
+    return render_template("commits.html", user=session.get("github_user"), owner=owner, repo=repo, commits=commits, environment_statuses=environment_statuses)
 

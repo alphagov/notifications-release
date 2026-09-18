@@ -23,22 +23,23 @@
     {% set api_repo = repos | selectattr("id", "equalto", "api") | first %}
     {% set admin_repo = repos | selectattr("id", "equalto", "admin") | first %}
     {% for environment in environment_statuses %}
+
     <tr class="govuk-table__row">
       <td class="govuk-table__cell">{{ environment.name }}</td>
-      <td class="govuk-table__cell">{{ environment.status.status }} <br />
-      <td class="govuk-table__cell">{{ environment.status.api.db_version }}</td>
-      <td class="govuk-table__cell">{{ environment.status.api.build_time | humanize_date }} <br />
+      <td class="govuk-table__cell">{{ environment.status }}</td>
+      <td class="govuk-table__cell">{{ environment.api.db_version }}</td>
+      <td class="govuk-table__cell">{{ environment.api.build_time | humanize_date }} <br />
         <a class="govuk-body-s govuk-link" style="color: grey"
-          href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.status.api.git_commit }}"
+          href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.api.git_commit }}"
           target="_blank">
-          {{ environment.status.api.git_commit[:7] }}
+          {{ environment.api.git_commit[:7] }}
         </a>
       </td>
-      <td class="govuk-table__cell">{{ environment.status.build_time | humanize_date }} <br />
+      <td class="govuk-table__cell">{{ environment.admin.build_time | humanize_date }} <br />
         <a class="govuk-body-s govuk-link" style="color: grey"
-          href="{{ 'https://github.com/' ~ admin_repo.repo ~ '/commit/' ~ environment.status.git_commit }}"
+          href="{{ 'https://github.com/' ~ admin_repo.repo ~ '/commit/' ~ environment.admin.git_commit }}"
           target="_blank">{{
-          environment.status.git_commit[:7] }}</a>
+          environment.admin.git_commit[:7] }}</a>
       </td>
     </tr>
     {% endfor %}
