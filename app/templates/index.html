@@ -13,6 +13,7 @@
     <tr class="govuk-table__row">
       <th class="govuk-table__header">Environment</th>
       <th class="govuk-table__header">Overall Status</th>
+      <th class="govuk-table__header">Current DB Version</th>
       {% for repo in repos %}
         <th class="govuk-table__header">{{ repo["name"] }} Commit</th>
       {% endfor %}
@@ -25,6 +26,7 @@
     <tr class="govuk-table__row">
       <td class="govuk-table__cell">{{ environment.name }}</td>
       <td class="govuk-table__cell">{{ environment.status.status }} <br />
+      <td class="govuk-table__cell">{{ environment.status.api.db_version }}</td>
       <td class="govuk-table__cell">{{ environment.status.api.build_time | humanize_date }} <br />
         <a class="govuk-body-s govuk-link" style="color: grey"
           href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.status.api.git_commit }}"
