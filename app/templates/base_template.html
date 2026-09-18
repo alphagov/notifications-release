@@ -9,7 +9,53 @@
 </head>
 
 <body class="govuk-template__body">
-    <main>
+    <div class="govuk-generic-header">
+        <div class="govuk-generic-header__container govuk-width-container">
+            <div class="govuk-generic-header__logo">
+                <a href="#" class="govuk-generic-header__homepage-link">
+                    <svg width="28" height="30" viewBox="0 0 28 30" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="13.5549" cy="4.21349" r="4.21349" />
+                        <circle cx="13.5549" cy="25.7865" r="4.21349" />
+                        <circle cx="22.8963" cy="9.6068" r="4.21349" />
+                        <circle cx="4.2135" cy="20.3932" r="4.21349" />
+                        <circle cx="22.8963" cy="20.3932" r="4.21349" />
+                        <circle cx="4.21351" cy="9.60674" r="4.21349" />
+                    </svg> GOVUK Notify Release app
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="govuk-service-navigation" data-module="govuk-service-navigation">
+        <div class="govuk-width-container">
+            <div class="govuk-service-navigation__container">
+                <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                    <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle"
+                        aria-controls="navigation" hidden aria-hidden="true">
+                        Menu
+                    </button>
+                    <ul class="govuk-service-navigation__list" id="navigation">
+                        <li class="govuk-service-navigation__item">
+                            <a class="govuk-service-navigation__link" href="#">
+                                Navigation item 1
+                            </a>
+                        </li>
+                        <li class="govuk-service-navigation__item govuk-service-navigation__item--active">
+                            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+                                <strong class="govuk-service-navigation__active-fallback">Navigation item 2</strong>
+                            </a>
+                        </li>
+                        <li class="govuk-service-navigation__item">
+                            <a class="govuk-service-navigation__link" href="#">
+                                Navigation item 3
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <main class="govuk-main-wrapper govuk-width-container" id="main-content">
         {% block content %}{% endblock %}
     </main>
     <footer>
@@ -18,8 +64,9 @@
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='govuk/govuk-frontend.min.js') }}"></script>
     <script type="module">
-        import { initAll } from '{{ url_for('static', filename='govuk/govuk-frontend.min.js') }}'
+        import { initAll } from '{{ url_for('static', filename='govuk / govuk - frontend.min.js') }}'
         initAll()
     </script>
 </body>
+
 </html>
