@@ -15,8 +15,8 @@
     <tbody class="govuk-table__body">
         {% for commit in commits %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell govuk-body-s">{{ commit.commit.message.split("\n")[0] }}</td>
-            <td class="govuk-table__cell govuk-body-s">{{ commit.commit.author.name }}</td>
+            <td class="govuk-table__cell govuk-body-s" width="50%">{{ commit.commit.message.split("\n")[0] }}</td>
+            <td class="govuk-table__cell govuk-body-s"><img src="{{ commit.author.avatar_url }}" alt="{{ commit.commit.author.name }}" width="20" height="20"> {{ commit.commit.author.name }}</td>
             <td class="govuk-table__cell govuk-body-s"><span title="{{ commit.commit.author.date }}">{{ commit.commit.author.date | humanize_date }}</span></td>
             <td class="govuk-table__cell govuk-body-s"><a href="{{ commit.html_url }}" target="_blank">{{ commit.sha[:7] }}</a></td>
         </tr>
