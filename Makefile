@@ -1,16 +1,18 @@
-.PHONY: install run
+.PHONY: install refreeze-requirements run venv
 
-install:
-	python -m pip install -r requirements.txt
+install: venv
+	.venv/bin/pip install -r requirements.txt
 
-run:
-	python -m flask --app app.app run --debug
+refreeze-requirements:
+	uv pip compile requirements.in -o requirements.txt --python .venv/bin/python
+
+run: install
+	.venv/bin/python -m flask --app app.app run --debug
 
 venv:
 	python3 -m venv .venv
-	.venv/bin/pip install -r requirements.txt
 	@echo "----------------------------------------"
-	@echo "Virtual environment created and dependencies installed."
+	@echo "Dependencies installation is handled by the install target."
 	@echo "To activate the virtual environment, run 'source .venv/bin/activate'."
 	@echo "To run the application, use 'make run'."
 	@echo "----------------------------------------"
