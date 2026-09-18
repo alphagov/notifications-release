@@ -12,7 +12,7 @@ ALLOWED_REPOS = [
 
 ENVIRONMENTS = [
     { "id": "production", "name": "Production", "url": "www.notifications.service.gov.uk" },
-    { "id": "staging", "name": "Staging", "url": "www.staging-notify.works" }
+    { "id": "staging", "name": "Staging", "url": "www.staging-notify.works" },
 ]
 
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
