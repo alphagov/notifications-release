@@ -1,7 +1,7 @@
 from functools import wraps
 
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, abort, redirect, render_template, session, url_for
+from flask import Flask, abort, redirect, render_template, session, url_for, send_from_directory
 
 from app import config, github_client
 
@@ -32,6 +32,10 @@ def login_required(view):
 def require_allowed_repo(owner, repo):
     if f"{owner}/{repo}" not in config.ALLOWED_REPOS:
         abort(403)
+
+@app.route("/assets/<path:filename>")
+def assets(filename):
+    return send_from_directory(app.static_folder + "/govuk/assets/", filename)
 
 ## AUTH ROUTES
 
