@@ -2,8 +2,7 @@
 {% set page_title = "Repositories" %}
 
 {% block content %}
-<h1>Repositories</h1>
-<ul>
+<ul class="govuk-list govuk-list--bullet">
     {% for full_name in repos %}
     {% set owner, repo = full_name.split("/", 1) %}
     <li>
@@ -15,4 +14,6 @@
     <li>No repositories configured.</li>
     {% endfor %}
 </ul>
+
+
 {% endblock %}

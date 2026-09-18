@@ -1,25 +1,24 @@
 {% extends "base_template.html" %}
 {% set page_title = owner ~ "/" ~ repo ~ " commits" %}
+{% set back_url = url_for('repos') %}
 
 {% block content %}
-<h1>{{ owner }}/{{ repo }} &mdash; commits</h1>
-<p><a href="{{ url_for('repos') }}">&laquo; back to repositories</a></p>
-<table>
-    <thead>
-        <tr>
-            <th>Message</th>
-            <th>Author</th>
-            <th>Date</th>
-            <th>Commit SHA / Link</th>
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header">Message</th>
+            <th class="govuk-table__header">Author</th>
+            <th class="govuk-table__header">Date</th>
+            <th class="govuk-table__header">Commit</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="govuk-table__body">
         {% for commit in commits %}
-        <tr>
-            <td>{{ commit.commit.message.split("\n")[0] }}</td>
-            <td>{{ commit.commit.author.name }}</td>
-            <td>{{ commit.commit.author.date }}</td>
-            <td><a href="{{ commit.html_url }}" target="_blank">{{ commit.sha }}</a></td>
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-body-s">{{ commit.commit.message.split("\n")[0] }}</td>
+            <td class="govuk-table__cell govuk-body-s">{{ commit.commit.author.name }}</td>
+            <td class="govuk-table__cell govuk-body-s"><span title="{{ commit.commit.author.date }}">{{ commit.commit.author.date | humanize_date }}</span></td>
+            <td class="govuk-table__cell govuk-body-s"><a href="{{ commit.html_url }}" target="_blank">{{ commit.sha[:7] }}</a></td>
         </tr>
         {% endfor %}
     </tbody>

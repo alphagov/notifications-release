@@ -2,11 +2,18 @@ from functools import wraps
 
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, abort, redirect, render_template, session, url_for, send_from_directory
+import humanize
+import datetime as dt
 
 from app import config, github_client
 
 app = Flask(__name__)
 app.secret_key = config.FLASK_SECRET_KEY
+
+@app.template_filter()
+def humanize_date(value):
+    dt_value = dt.datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+    return humanize.naturaltime(dt.datetime.now() - dt_value)
 
 oauth = OAuth(app)
 oauth.register(
