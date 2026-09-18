@@ -3,6 +3,7 @@
 {% set back_url = url_for('repos') %}
 
 {% block content %}
+
 <table class="govuk-table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
@@ -15,10 +16,28 @@
     <tbody class="govuk-table__body">
         {% for commit in commits %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell govuk-body-s" width="50%">{{ commit.commit.message.split("\n")[0] }}</td>
+            <td class="govuk-table__cell govuk-body-s" width="50%">
+                {{ commit.commit.message.split("\n")[0] }}
+                <br/>
+                <div class="govuk-!-margin-top-1">
+                    {% for env in environment_statuses %}
+                        {% if env.api.git_commit == commit.sha or env.admin.git_commit == commit.sha %}
+                            {% if env.id == 'production' %}
+                                <span class="govuk-tag govuk-tag--red govuk-!-margin-right-1 govuk-!-margin-bottom-1">{{ env.name }}</span>
+                            {% elif env.id == 'staging' %}
+                                <span class="govuk-tag govuk-tag--yellow govuk-!-margin-right-1 govuk-!-margin-bottom-1">{{ env.name }}</span>
+                            {% else %}
+                                <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1 govuk-!-margin-bottom-1">{{ env.name }}</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </td>
             <td class="govuk-table__cell govuk-body-s"><img src="{{ commit.author.avatar_url }}" alt="{{ commit.commit.author.name }}" width="20" height="20"> {{ commit.commit.author.name }}</td>
             <td class="govuk-table__cell govuk-body-s"><span title="{{ commit.commit.author.date }}">{{ commit.commit.author.date | humanize_date }}</span></td>
-            <td class="govuk-table__cell govuk-body-s"><a href="{{ commit.html_url }}" target="_blank">{{ commit.sha[:7] }}</a></td>
+            <td class="govuk-table__cell govuk-body-s"><a href="{{ commit.html_url }}" target="_blank">
+                {{ commit.sha[:7] }}
+            </a></td>
         </tr>
         {% endfor %}
     </tbody>
