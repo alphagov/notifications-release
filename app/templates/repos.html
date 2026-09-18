@@ -1,0 +1,18 @@
+{% extends "base_template.html" %}
+{% set page_title = "Repositories" %}
+
+{% block content %}
+<h1>Repositories</h1>
+<ul>
+    {% for full_name in repos %}
+    {% set owner, repo = full_name.split("/", 1) %}
+    <li>
+        {{ full_name }}
+        &mdash;
+        <a href="{{ url_for('repo_commits', owner=owner, repo=repo) }}">commit history</a>
+    </li>
+    {% else %}
+    <li>No repositories configured.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
