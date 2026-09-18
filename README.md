@@ -4,10 +4,10 @@ This application allows users to see information about releases on GOVUK Notify.
 
 ## Getting started
 
-### Set up virtual environment
+### Install dependencies and set up virtual environment
 
 ```
-make venv
+make bootstrap
 ```
 
 ### Configure GitHub login

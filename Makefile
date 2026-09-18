@@ -1,6 +1,6 @@
 .PHONY: install govuk-frontend refreeze-requirements run venv
 
-install: venv
+bootstrap: venv govuk-frontend
 	.venv/bin/pip install -r requirements.txt
 
 govuk-frontend:
@@ -10,7 +10,7 @@ govuk-frontend:
 refreeze-requirements:
 	uv pip compile requirements.in -o requirements.txt --python .venv/bin/python
 
-run: install
+run: bootstrap
 	.venv/bin/python -m flask --app app.app run --debug
 
 venv:
