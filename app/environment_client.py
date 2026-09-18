@@ -3,13 +3,36 @@ import http.client
 import json as JSON
 import ssl
 import certifi
+from typing import TypedDict
 
 SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 
-def get_all_environments():
+class APIStatus(TypedDict):
+    git_commit: str
+    build_time: str
+    db_version: str
+    db_bulk_version: str
+    status: str
+
+
+class AdminStatus(TypedDict):
+    git_commit: str
+    build_time: str
+    status: str
+
+
+class Environment(TypedDict):
+    id: str
+    url: str
+    name: str
+    status: str
+    api: APIStatus
+    admin: AdminStatus
+
+def get_all_environments() -> list[config.Environment]:
     return config.ENVIRONMENTS
 
-def get_status_for_all_environments():
+def get_status_for_all_environments() -> list[Environment]:
     environments = get_all_environments()
     transformed_environments = []
 
