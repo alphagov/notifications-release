@@ -4,16 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='govuk/govuk-frontend.min.css') }}">
     <title>{{ page_title | default("Home") }} - Release App - GOVUK Notify</title>
 </head>
 
-<body>
+<body class="govuk-template__body">
     <main>
         {% block content %}{% endblock %}
     </main>
     <footer>
         <p>&copy; GOVUK Notify</p>
     </footer>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='govuk/govuk-frontend.min.js') }}"></script>
+    <script type="module">
+        import { initAll } from '{{ url_for('static', filename='govuk/govuk-frontend.min.js') }}'
+        initAll()
+    </script>
 </body>
-
 </html>

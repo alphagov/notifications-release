@@ -1,7 +1,11 @@
-.PHONY: install refreeze-requirements run venv
+.PHONY: install govuk-frontend refreeze-requirements run venv
 
 install: venv
 	.venv/bin/pip install -r requirements.txt
+
+govuk-frontend:
+	npm install
+	npm run copy-govuk-frontend
 
 refreeze-requirements:
 	uv pip compile requirements.in -o requirements.txt --python .venv/bin/python
