@@ -3,12 +3,12 @@
 
 {% block content %}
 <ul class="govuk-list govuk-list--bullet">
-    {% for full_name in repos %}
-    {% set owner, repo = full_name.split("/", 1) %}
+    {% for repo in repos %}
+    {% set owner, repo_name = repo.repo.split("/", 1) %}
     <li>
-        {{ full_name }}
+        {{ repo.name }} (<a href="https://github.com/{{ repo.repo }}" target="_blank" class="govuk-link">{{ repo.repo }}</a>)
         &mdash;
-        <a href="{{ url_for('repo_commits', owner=owner, repo=repo) }}">commit history</a>
+        <a href="{{ url_for('repo_commits', owner=owner, repo=repo_name) }}">commit history</a>
     </li>
     {% else %}
     <li>No repositories configured.</li>

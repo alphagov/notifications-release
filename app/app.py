@@ -1,5 +1,5 @@
 from functools import wraps
-
+from app.environment_client import get_status_for_all_environments
 from authlib.integrations.flask_client import OAuth
 from flask import Flask, abort, redirect, render_template, session, url_for, send_from_directory
 import humanize
@@ -12,8 +12,17 @@ app.secret_key = config.FLASK_SECRET_KEY
 
 @app.template_filter()
 def humanize_date(value):
-    dt_value = dt.datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
-    return humanize.naturaltime(dt.datetime.now() - dt_value)
+    if isinstance(value, dt.datetime):
+        dt_value = value
+    elif isinstance(value, dt.date):
+        dt_value = dt.datetime.combine(value, dt.time())
+    elif isinstance(value, (int, float)):
+        dt_value = dt.datetime.fromtimestamp(value)
+    else:
+        dt_value = dt.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+
+    now = dt.datetime.now(dt_value.tzinfo) if dt_value.tzinfo else dt.datetime.now()
+    return humanize.naturaltime(now - dt_value)
 
 oauth = OAuth(app)
 oauth.register(
@@ -37,7 +46,7 @@ def login_required(view):
 
 
 def require_allowed_repo(owner, repo):
-    if f"{owner}/{repo}" not in config.ALLOWED_REPOS:
+    if f"{owner}/{repo}" not in (allowed_repo["repo"] for allowed_repo in config.ALLOWED_REPOS):
         abort(403)
 
 @app.route("/assets/<path:filename>")
@@ -72,7 +81,9 @@ def logout():
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html", user=session.get("github_user"))
+    environment_statuses = get_status_for_all_environments()
+
+    return render_template("index.html", user=session.get("github_user"), environment_statuses=environment_statuses, repos=config.ALLOWED_REPOS)
 
 
 @app.route("/repos")
@@ -86,5 +97,6 @@ def repos():
 def repo_commits(owner, repo):
     require_allowed_repo(owner, repo)
     commits = github_client.list_commits(session["github_token"], owner, repo)
+
     return render_template("commits.html", owner=owner, repo=repo, commits=commits)
 

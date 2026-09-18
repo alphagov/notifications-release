@@ -6,8 +6,13 @@ load_dotenv()
 
 # Repos users are allowed to browse, regardless of what their GitHub token can access.
 ALLOWED_REPOS = [
-    "alphagov/notifications-api",
-    "alphagov/notifications-admin",
+    { "id": "api", "name": "Notifications API", "repo": "alphagov/notifications-api" },
+    { "id": "admin", "name": "Notifications Admin", "repo": "alphagov/notifications-admin" },
+]
+
+ENVIRONMENTS = [
+    { "id": "production", "name": "Production", "url": "www.notifications.service.gov.uk" },
+    { "id": "staging", "name": "Staging", "url": "www.staging-notify.works" }
 ]
 
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
