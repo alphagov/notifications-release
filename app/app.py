@@ -5,7 +5,7 @@ from flask import Flask, abort, redirect, render_template, session, url_for, sen
 import humanize
 import datetime as dt
 
-from app import config, github_client
+from app import config, github_client, pull_request_board
 
 app = Flask(__name__)
 app.secret_key = config.FLASK_SECRET_KEY
@@ -100,4 +100,22 @@ def repo_commits(owner, repo):
     environment_statuses = get_status_for_all_environments()
 
     return render_template("commits.html", user=session.get("github_user"), owner=owner, repo=repo, commits=commits, environment_statuses=environment_statuses)
+
+
+@app.route("/pull-requests")
+@login_required
+def pull_requests():
+    owner, repo = config.ALLOWED_REPOS[0]["repo"].split("/", 1)
+    return redirect(url_for("repo_pull_requests", owner=owner, repo=repo))
+
+
+@app.route("/repos/<owner>/<repo>/pull-requests")
+@login_required
+def repo_pull_requests(owner, repo):
+    require_allowed_repo(owner, repo)
+    repo_id = next(r["id"] for r in config.ALLOWED_REPOS if r["repo"] == f"{owner}/{repo}")
+    environment_statuses = get_status_for_all_environments()
+    board = pull_request_board.build_board(session["github_token"], owner, repo, repo_id, environment_statuses)
+
+    return render_template("pull_requests.html", user=session.get("github_user"), owner=owner, repo=repo, board=board, repos=config.ALLOWED_REPOS)
 

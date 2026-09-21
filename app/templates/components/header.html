@@ -50,6 +50,11 @@
                                 <strong class="govuk-service-navigation__active-fallback">Repositories</strong>
                             </a>
                         </li>
+                        <li class="govuk-service-navigation__item {{ 'govuk-service-navigation__item--active' if request.endpoint in ('pull_requests', 'repo_pull_requests') else '' }}">
+                            <a class="govuk-service-navigation__link" href="{{ url_for('pull_requests') }}" aria-current="true">
+                                <strong class="govuk-service-navigation__active-fallback">Pull requests</strong>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
