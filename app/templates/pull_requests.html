@@ -10,15 +10,7 @@
 ] %}
 
 {% block content %}
-<style>
-    .kanban-board { display: flex; gap: 15px; align-items: flex-start; }
-    .kanban-column { flex: 1 1 0; min-width: 0; background: #f3f2f1; padding: 10px; border-radius: 4px; }
-    .kanban-column__heading { margin: 5px 5px 10px; }
-    .kanban-card { background: #ffffff; border: 1px solid #b1b4b6; border-radius: 4px; padding: 10px; margin-bottom: 10px; }
-    .kanban-card:last-child { margin-bottom: 0; }
-    .kanban-card__meta { display: flex; align-items: center; gap: 5px; }
-    .kanban-empty { color: #505a5f; padding: 5px; }
-</style>
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -37,10 +29,10 @@
                 <div class="kanban-board">
                     {% for column_id, column_name, tag_class in columns %}
                     {% set cards = board[column_id] %}
-                    <div class="kanban-column">
+                    <div class="kanban-column kanban-column--{{ column_id }}">
                         <h3 class="govuk-heading-s kanban-column__heading">
                             <span class="govuk-tag {{ tag_class }}">{{ column_name }}</span>
-                            <span class="govuk-!-margin-left-1">{{ cards | length }}</span>
+                            <span class="govuk-!-margin-left-1 kanban-column__count">{{ cards | length }}</span>
                         </h3>
                         {% for pr in cards %}
                         <div class="kanban-card">
@@ -52,7 +44,7 @@
                                 <img src="{{ pr.user.avatar_url }}" alt="{{ pr.user.login }}" width="20" height="20">
                                 {{ pr.user.login }}
                             </p>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0" style="color:#505a5f;">
+                            <p class="govuk-body-s govuk-!-margin-bottom-0 kanban-card__branch">
                                 <code>{{ pr.head.ref }}</code>
                                 &middot;
                                 <span title="{{ pr.updated_at }}">{{ pr.updated_at | humanize_date }}</span>
