@@ -27,19 +27,25 @@
     <tr class="govuk-table__row">
       <td class="govuk-table__cell">{{ environment.name }}</td>
       <td class="govuk-table__cell">{{ environment.status }}</td>
-      <td class="govuk-table__cell">{{ environment.api.db_version }}</td>
-      <td class="govuk-table__cell">{{ environment.api.build_time | humanize_date }} <br />
-        <a class="govuk-body-s govuk-link" style="color: grey"
-          href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.api.git_commit }}"
-          target="_blank">
-          {{ environment.api.git_commit[:7] }}
-        </a>
+      <td class="govuk-table__cell">{{ environment.api.db_version or "" }}</td>
+      <td class="govuk-table__cell">
+        {% if environment.api.build_time %}
+          {{ environment.api.build_time | humanize_date }} <br />
+          <a class="govuk-body-s govuk-link" style="color: grey"
+            href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.api.git_commit }}"
+            target="_blank">
+            {{ environment.api.git_commit[:7] }}
+          </a>
+        {% endif %}
       </td>
-      <td class="govuk-table__cell">{{ environment.admin.build_time | humanize_date }} <br />
-        <a class="govuk-body-s govuk-link" style="color: grey"
-          href="{{ 'https://github.com/' ~ admin_repo.repo ~ '/commit/' ~ environment.admin.git_commit }}"
-          target="_blank">{{
-          environment.admin.git_commit[:7] }}</a>
+      <td class="govuk-table__cell">
+        {% if environment.admin.build_time %}
+          {{ environment.admin.build_time | humanize_date }} <br />
+          <a class="govuk-body-s govuk-link" style="color: grey"
+            href="{{ 'https://github.com/' ~ admin_repo.repo ~ '/commit/' ~ environment.admin.git_commit }}"
+            target="_blank">{{
+            environment.admin.git_commit[:7] }}</a>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

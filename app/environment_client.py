@@ -37,6 +37,7 @@ def get_status_for_all_environments() -> list[Environment]:
     transformed_environments = []
 
     for environment in environments:
+        conn = None
         try:
             conn = http.client.HTTPSConnection(environment["url"], context=SSL_CONTEXT)
             conn.request("GET", "/_status")
@@ -51,24 +52,29 @@ def get_status_for_all_environments() -> list[Environment]:
             print(e)
             print(f"Environment {environment['id']} is unavailable due to an exception")
         finally:
-            conn.close()
-            transformed_environments.append({
-                "id": environment.get("id"),
-                "url": environment.get("url"),
-                "name": environment.get("name"),
-                "status": environment.get("status").get("status"),
-                "api": {
-                    "git_commit": environment.get("status", {}).get("api", {}).get("git_commit"),
-                    "build_time": environment.get("status", {}).get("api", {}).get("build_time"),
-                    "db_version": environment.get("status", {}).get("api", {}).get("db_version"),
-                    "db_bulk_version": environment.get("status", {}).get("api", {}).get("db_bulk_version"),
-                    "status": environment.get("status", {}).get("api", {}).get("status")
-                },
-                "admin": {
-                    "git_commit": environment.get("status", {}).get("git_commit"),
-                    "build_time": environment.get("status", {}).get("build_time"),
-                    "status": environment.get("status", {}).get("status"),
-                },
-            })
+            if conn is not None:
+                conn.close()
+
+        status = environment.get("status")
+        available = status not in ("error", "unavailable")
+
+        transformed_environments.append({
+            "id": environment.get("id"),
+            "url": environment.get("url"),
+            "name": environment.get("name"),
+            "status": status.get("status") if available else status,
+            "api": {
+                "git_commit": status.get("api", {}).get("git_commit") if available else None,
+                "build_time": status.get("api", {}).get("build_time") if available else None,
+                "db_version": status.get("api", {}).get("db_version") if available else None,
+                "db_bulk_version": status.get("api", {}).get("db_bulk_version") if available else None,
+                "status": status.get("api", {}).get("status") if available else None,
+            },
+            "admin": {
+                "git_commit": status.get("git_commit") if available else None,
+                "build_time": status.get("build_time") if available else None,
+                "status": status.get("status") if available else None,
+            },
+        })
 
     return transformed_environments
