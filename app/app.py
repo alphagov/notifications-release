@@ -6,9 +6,19 @@ import humanize
 import datetime as dt
 
 from app import config, github_client, pull_request_board
+from app.github_client import GitHubApiError
 
 app = Flask(__name__)
 app.secret_key = config.FLASK_SECRET_KEY
+
+
+@app.errorhandler(GitHubApiError)
+def handle_github_api_error(error):
+    # A stale/revoked session token surfaces as 401 from GitHub; force re-login instead of a 500.
+    if error.status_code == 401:
+        session.clear()
+        return redirect(url_for("login"))
+    raise error
 
 @app.template_filter()
 def humanize_date(value):
