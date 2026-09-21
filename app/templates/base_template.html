@@ -5,18 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='govuk/govuk-frontend.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
     <title>{{ page_title | default("Home") }} - Release App - GOVUK Notify</title>
 </head>
 
 <body class="govuk-template__body">
     {% include 'components/header.html' %}
-    <main class="govuk-main-wrapper govuk-width-container" id="main-content">
+    <main class="govuk-main-wrapper {{ 'govuk-width-container--full' if full_width else 'govuk-width-container' }}" id="main-content">
         {% if back_url %}
             <a href="{{ back_url }}" class="govuk-back-link">Back</a>
         {% endif %}
 
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-{{ 'full' if full_width else 'two-thirds' }}">
                 <h1 class="govuk-heading-l">{{ heading | default(page_title) }}</h1>
             </div>
         </div>

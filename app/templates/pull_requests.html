@@ -1,5 +1,6 @@
 {% extends "base_template.html" %}
 {% set page_title = "Pull requests" %}
+{% set full_width = true %}
 
 {% set columns = [
     ("open", "Open PR", "govuk-tag--grey"),
@@ -10,8 +11,6 @@
 
 {% block content %}
 <style>
-    /* Break out of govuk-width-container to span the full viewport. */
-    .kanban-fullwidth { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; box-sizing: border-box; padding: 0 30px; }
     .kanban-board { display: flex; gap: 15px; align-items: flex-start; }
     .kanban-column { flex: 1 1 0; min-width: 0; background: #f3f2f1; padding: 10px; border-radius: 4px; }
     .kanban-column__heading { margin: 5px 5px 10px; }
@@ -21,48 +20,50 @@
     .kanban-empty { color: #505a5f; padding: 5px; }
 </style>
 
-<div class="kanban-fullwidth">
-    <div class="govuk-tabs">
-        <h2 class="govuk-tabs__title">Repositories</h2>
-        <ul class="govuk-tabs__list">
-            {% for r in repos %}
-            {% set r_owner, r_name = r.repo.split("/", 1) %}
-            {% set is_current = r_owner == owner and r_name == repo %}
-            <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if is_current else '' }}">
-                <a class="govuk-tabs__tab" href="{{ url_for('repo_pull_requests', owner=r_owner, repo=r_name) }}"{% if is_current %} aria-current="page"{% endif %}>{{ r.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <div class="govuk-tabs__panel">
-            <div class="kanban-board">
-                {% for column_id, column_name, tag_class in columns %}
-                {% set cards = board[column_id] %}
-                <div class="kanban-column">
-                    <h3 class="govuk-heading-s kanban-column__heading">
-                        <span class="govuk-tag {{ tag_class }}">{{ column_name }}</span>
-                        <span class="govuk-!-margin-left-1">{{ cards | length }}</span>
-                    </h3>
-                    {% for pr in cards %}
-                    <div class="kanban-card">
-                        <p class="govuk-body-s govuk-!-margin-bottom-2">
-                            <a class="govuk-link" href="{{ pr.html_url }}" target="_blank">#{{ pr.number }}</a>
-                            {{ pr.title }}
-                        </p>
-                        <p class="govuk-body-s govuk-!-margin-bottom-1 kanban-card__meta">
-                            <img src="{{ pr.user.avatar_url }}" alt="{{ pr.user.login }}" width="20" height="20">
-                            {{ pr.user.login }}
-                        </p>
-                        <p class="govuk-body-s govuk-!-margin-bottom-0" style="color:#505a5f;">
-                            <code>{{ pr.head.ref }}</code>
-                            &middot;
-                            <span title="{{ pr.updated_at }}">{{ pr.updated_at | humanize_date }}</span>
-                        </p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-tabs">
+            <h2 class="govuk-tabs__title">Repositories</h2>
+            <ul class="govuk-tabs__list">
+                {% for r in repos %}
+                {% set r_owner, r_name = r.repo.split("/", 1) %}
+                {% set is_current = r_owner == owner and r_name == repo %}
+                <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if is_current else '' }}">
+                    <a class="govuk-tabs__tab" href="{{ url_for('repo_pull_requests', owner=r_owner, repo=r_name) }}"{% if is_current %} aria-current="page"{% endif %}>{{ r.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="govuk-tabs__panel">
+                <div class="kanban-board">
+                    {% for column_id, column_name, tag_class in columns %}
+                    {% set cards = board[column_id] %}
+                    <div class="kanban-column">
+                        <h3 class="govuk-heading-s kanban-column__heading">
+                            <span class="govuk-tag {{ tag_class }}">{{ column_name }}</span>
+                            <span class="govuk-!-margin-left-1">{{ cards | length }}</span>
+                        </h3>
+                        {% for pr in cards %}
+                        <div class="kanban-card">
+                            <p class="govuk-body-s govuk-!-margin-bottom-2">
+                                <a class="govuk-link" href="{{ pr.html_url }}" target="_blank">#{{ pr.number }}</a>
+                                {{ pr.title }}
+                            </p>
+                            <p class="govuk-body-s govuk-!-margin-bottom-1 kanban-card__meta">
+                                <img src="{{ pr.user.avatar_url }}" alt="{{ pr.user.login }}" width="20" height="20">
+                                {{ pr.user.login }}
+                            </p>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0" style="color:#505a5f;">
+                                <code>{{ pr.head.ref }}</code>
+                                &middot;
+                                <span title="{{ pr.updated_at }}">{{ pr.updated_at | humanize_date }}</span>
+                            </p>
+                        </div>
+                        {% else %}
+                        <p class="govuk-body-s kanban-empty">No pull requests</p>
+                        {% endfor %}
                     </div>
-                    {% else %}
-                    <p class="govuk-body-s kanban-empty">No pull requests</p>
                     {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>
