@@ -1,0 +1,13 @@
+{% extends "base_template.html" %}
+{% set page_title = "Sign in" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">You need to sign in with GitHub to use this service.</p>
+        <a href="{{ url_for('login_github') }}" class="govuk-button" data-module="govuk-button">
+            Sign in with GitHub
+        </a>
+    </div>
+</div>
+{% endblock %}

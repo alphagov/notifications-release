@@ -10,6 +10,7 @@ from app.github_client import GitHubApiError
 
 app = Flask(__name__)
 app.secret_key = config.FLASK_SECRET_KEY
+app.permanent_session_lifetime = dt.timedelta(hours=24)
 
 
 @app.errorhandler(GitHubApiError)
@@ -67,7 +68,16 @@ def assets(filename):
 
 @app.route("/login")
 def login():
+    if session.get("github_token"):
+        return redirect(url_for("index"))
+    
+    return render_template("login.html")
+
+
+@app.route("/login/github")
+def login_github():
     redirect_uri = url_for("auth_callback", _external=True)
+    
     return oauth.github.authorize_redirect(redirect_uri)
 
 
@@ -75,8 +85,11 @@ def login():
 def auth_callback():
     token = oauth.github.authorize_access_token()
     profile = github_client.get_authenticated_user(token["access_token"])
+    
+    session.permanent = True
     session["github_token"] = token["access_token"]
     session["github_user"] = profile["login"]
+    
     return redirect(url_for("repos"))
 
 

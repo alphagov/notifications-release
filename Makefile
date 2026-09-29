@@ -10,7 +10,9 @@ govuk-frontend:
 refreeze-requirements:
 	uv pip compile requirements.in -o requirements.txt --python .venv/bin/python
 
-run: bootstrap
+run: bootstrap serve
+
+serve:
 	.venv/bin/python -m flask --app app.app run --debug
 
 venv:
