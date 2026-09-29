@@ -14,14 +14,13 @@
       <th class="govuk-table__header">Environment</th>
       <th class="govuk-table__header">Overall Status</th>
       <th class="govuk-table__header">Current DB Version</th>
-      {% for repo in repos %}
-        <th class="govuk-table__header">{{ repo["name"] }}'s latest change</th>
-      {% endfor %}
+      <th class="govuk-table__header">API's latest change</th>
+      <th class="govuk-table__header">Admin's latest change</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    {% set api_repo = repos | selectattr("id", "equalto", "api") | first %}
-    {% set admin_repo = repos | selectattr("id", "equalto", "admin") | first %}
+    {% set api_repo = repos | selectattr("id", "equalto", "notifications-api") | first %}
+    {% set admin_repo = repos | selectattr("id", "equalto", "notifications-admin") | first %}
     {% for environment in environment_statuses %}
 
     <tr class="govuk-table__row">
