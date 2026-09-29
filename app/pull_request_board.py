@@ -50,9 +50,9 @@ def _environment_priority() -> list[str]:
 
 
 def _deployed_sha(environment: Environment, repo_id: str) -> str | None:
-    if repo_id == "api":
+    if repo_id == "notifications-api":
         return environment.get("api", {}).get("git_commit")
-    if repo_id == "admin":
+    if repo_id == "notifications-admin":
         return environment.get("admin", {}).get("git_commit")
     return None
 
