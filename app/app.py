@@ -10,7 +10,7 @@ from app.github_client import GitHubApiError
 
 app = Flask(__name__)
 app.secret_key = config.FLASK_SECRET_KEY
-app.permanent_session_lifetime = dt.timedelta(hours=24)
+app.permanent_session_lifetime = dt.timedelta(hours=8)
 
 
 @app.errorhandler(GitHubApiError)
