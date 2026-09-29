@@ -19,7 +19,12 @@ def handle_github_api_error(error):
     if error.status_code == 401:
         session.clear()
         return redirect(url_for("login"))
-    raise error
+    return render_template(
+        "github_error.html",
+        user=session.get("github_user"),
+        status_code=error.status_code,
+        message=str(error) or "GitHub API error",
+    ), error.status_code
 
 @app.template_filter()
 def humanize_date(value):
