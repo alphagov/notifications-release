@@ -1,68 +1,61 @@
 {% extends "base_template.html" %}
-{% set page_title = "Pull requests" %}
+{% set page_title = "Pull requests for " ~ repo["name"] %}
 {% set full_width = true %}
 
 {% set columns = [
-    ("open", "Open PR", "govuk-tag--grey"),
-    ("merged", "Merged", "govuk-tag--blue"),
-    ("staging", "Staging", "govuk-tag--yellow"),
-    ("production", "Production", "govuk-tag--red"),
+("open", "Open PR", "govuk-tag--grey"),
+("merged", "Merged", "govuk-tag--blue"),
+("staging", "Staging", "govuk-tag--yellow"),
+("production", "Production", "govuk-tag--red"),
 ] %}
 
 {% block content %}
 
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-tabs">
-            <h2 class="govuk-tabs__title">Repositories</h2>
-            <ul class="govuk-tabs__list">
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="repository">
+                Choose Repository
+            </label>
+            <select class="govuk-select" id="repository" name="repository" onchange="window.location.href = this.value">
                 {% for r in repos %}
                 {% set r_owner, r_name = r.repo.split("/", 1) %}
-                {% set is_current = r_owner == owner and r_name == repo %}
-                <li class="govuk-tabs__list-item {{ 'govuk-tabs__list-item--selected' if is_current else '' }}">
-                    <a class="govuk-tabs__tab" href="{{ url_for('repo_pull_requests', owner=r_owner, repo=r_name) }}"{% if is_current %} aria-current="page"{% endif %}>{{ r.name }}
-                        {% if r.private %}
-                        <div class="icon-small">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224z"/></svg>
-                        </div>
-                        {% endif %}
-                    </a>
-                </li>
+                <option value="{{ url_for('repo_pull_requests', owner=r_owner, repo=r_name) }}" {% if r_owner==owner and
+                    r_name==repo["id"] %} selected{% endif %}>
+                    {{ r.name }} {% if r.private %}🔒{% endif %}
+                </option>
                 {% endfor %}
-            </ul>
-            <div class="govuk-tabs__panel">
-                <div class="kanban-board">
-                    {% for column_id, column_name, tag_class in columns %}
-                    {% set cards = board[column_id] %}
-                    <div class="kanban-column kanban-column--{{ column_id }}">
-                        <h3 class="govuk-heading-s kanban-column__heading">
-                            <span class="govuk-tag {{ tag_class }}">{{ column_name }}</span>
-                            <span class="govuk-!-margin-left-1 kanban-column__count">{{ cards | length }}</span>
-                        </h3>
-                        {% for pr in cards %}
-                        <div class="kanban-card">
-                            <p class="govuk-body-s govuk-!-margin-bottom-2">
-                                <a class="govuk-link" href="{{ pr.html_url }}" target="_blank">#{{ pr.number }}</a>
-                                {{ pr.title }}
-                            </p>
-                            <p class="govuk-body-s govuk-!-margin-bottom-1 kanban-card__meta">
-                                <img src="{{ pr.user.avatar_url }}" alt="{{ pr.user.login }}" width="20" height="20">
-                                {{ pr.user.login }}
-                            </p>
-                            <p class="govuk-body-s govuk-!-margin-bottom-0 kanban-card__branch">
-                                <code>{{ pr.head.ref }}</code>
-                                &middot;
-                                <span title="{{ pr.updated_at }}">{{ pr.updated_at | humanize_date }}</span>
-                            </p>
-                        </div>
-                        {% else %}
-                        <p class="govuk-body-s kanban-empty">No pull requests</p>
-                        {% endfor %}
-                    </div>
-                    {% endfor %}
+            </select>
+        </div>
+        <div class="kanban-board">
+            {% for column_id, column_name, tag_class in columns %}
+            {% set cards = board[column_id] %}
+            <div class="kanban-column kanban-column--{{ column_id }}">
+                <h3 class="govuk-heading-s kanban-column__heading">
+                    <span class="govuk-tag {{ tag_class }}">{{ column_name }}</span>
+                    <span class="govuk-!-margin-left-1 kanban-column__count">{{ cards | length }}</span>
+                </h3>
+                {% for pr in cards %}
+                <div class="kanban-card">
+                    <p class="govuk-body-s govuk-!-margin-bottom-2">
+                        <a class="govuk-link" href="{{ pr.html_url }}" target="_blank">#{{ pr.number }}</a>
+                        {{ pr.title }}
+                    </p>
+                    <p class="govuk-body-s govuk-!-margin-bottom-1 kanban-card__meta">
+                        <img src="{{ pr.user.avatar_url }}" alt="{{ pr.user.login }}" width="20" height="20">
+                        {{ pr.user.login }}
+                    </p>
+                    <p class="govuk-body-s govuk-!-margin-bottom-0 kanban-card__branch">
+                        <code>{{ pr.head.ref }}</code>
+                        &middot;
+                        <span title="{{ pr.updated_at }}">{{ pr.updated_at | humanize_date }}</span>
+                    </p>
                 </div>
+                {% else %}
+                <p class="govuk-body-s kanban-empty">No pull requests</p>
+                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>

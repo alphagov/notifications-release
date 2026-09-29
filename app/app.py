@@ -141,9 +141,10 @@ def pull_requests():
 @login_required
 def repo_pull_requests(owner, repo):
     require_allowed_repo(owner, repo)
-    repo_id = next(r["id"] for r in config.ALLOWED_REPOS if r["repo"] == f"{owner}/{repo}")
+    repo_details = next(r for r in config.ALLOWED_REPOS if r["repo"] == f"{owner}/{repo}")
+    repo_id = repo_details["id"]
     environment_statuses = get_status_for_all_environments()
     board = pull_request_board.build_board(session["github_token"], owner, repo, repo_id, environment_statuses)
 
-    return render_template("pull_requests.html", user=session.get("github_user"), owner=owner, repo=repo, board=board, repos=config.ALLOWED_REPOS)
+    return render_template("pull_requests.html", user=session.get("github_user"), owner=owner, repo=repo_details, board=board, repos=config.ALLOWED_REPOS)
 
