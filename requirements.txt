@@ -6,6 +6,8 @@ blinker==1.9.0
     # via
     #   -r requirements.in
     #   flask
+cachetools==6.2.1
+    # via -r requirements.in
 certifi==2026.7.22
     # via requests
 cffi==2.1.1
