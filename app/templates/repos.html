@@ -1,0 +1,19 @@
+{% extends "base_template.html" %}
+{% set page_title = "Repositories" %}
+
+{% block content %}
+<ul class="govuk-list govuk-list--bullet">
+    {% for repo in repos %}
+    {% set owner, repo_name = repo.repo.split("/", 1) %}
+    <li>
+        {{ repo.name }} (<a href="https://github.com/{{ repo.repo }}" target="_blank" class="govuk-link">{{ repo.repo }}</a>)
+        &mdash;
+        <a href="{{ url_for('repo_commits', owner=owner, repo=repo_name) }}">commit history</a>
+    </li>
+    {% else %}
+    <li>No repositories configured.</li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
