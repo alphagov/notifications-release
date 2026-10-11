@@ -39,7 +39,8 @@ def get_status_for_all_environments() -> list[Environment]:
     environments = get_all_environments()
     transformed_environments = []
 
-    for environment in environments:
+    for env in environments:
+        environment = env
         conn = None
         try:
             conn = http.client.HTTPSConnection(
