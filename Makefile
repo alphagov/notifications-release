@@ -22,3 +22,6 @@ venv:
 	@echo "To activate the virtual environment, run 'source .venv/bin/activate'."
 	@echo "To run the application, use 'make run'."
 	@echo "----------------------------------------"
+
+test:
+	pytest -n logical --maxfail=10
