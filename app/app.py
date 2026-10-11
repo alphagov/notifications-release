@@ -1,7 +1,15 @@
 from functools import wraps
 from app.environment_client import get_status_for_all_environments
 from authlib.integrations.flask_client import OAuth
-from flask import Flask, abort, redirect, render_template, session, url_for, send_from_directory
+from flask import (
+    Flask,
+    abort,
+    redirect,
+    render_template,
+    session,
+    url_for,
+    send_from_directory,
+)
 import humanize
 import datetime as dt
 
@@ -26,6 +34,7 @@ def handle_github_api_error(error):
         message=str(error) or "GitHub API error",
     ), error.status_code
 
+
 @app.template_filter()
 def humanize_date(value):
     if isinstance(value, dt.datetime):
@@ -39,6 +48,7 @@ def humanize_date(value):
 
     now = dt.datetime.now(dt_value.tzinfo) if dt_value.tzinfo else dt.datetime.now()
     return humanize.naturaltime(now - dt_value)
+
 
 oauth = OAuth(app)
 oauth.register(
@@ -62,27 +72,32 @@ def login_required(view):
 
 
 def require_allowed_repo(owner, repo):
-    if f"{owner}/{repo}" not in (allowed_repo["repo"] for allowed_repo in config.ALLOWED_REPOS):
+    if f"{owner}/{repo}" not in (
+        allowed_repo["repo"] for allowed_repo in config.ALLOWED_REPOS
+    ):
         abort(403)
+
 
 @app.route("/assets/<path:filename>")
 def assets(filename):
     return send_from_directory(app.static_folder + "/govuk/assets/", filename)
 
+
 ## AUTH ROUTES
+
 
 @app.route("/login")
 def login():
     if session.get("github_token"):
         return redirect(url_for("index"))
-    
+
     return render_template("login.html")
 
 
 @app.route("/login/github")
 def login_github():
     redirect_uri = url_for("auth_callback", _external=True)
-    
+
     return oauth.github.authorize_redirect(redirect_uri)
 
 
@@ -90,11 +105,11 @@ def login_github():
 def auth_callback():
     token = oauth.github.authorize_access_token()
     profile = github_client.get_authenticated_user(token["access_token"])
-    
+
     session.permanent = True
     session["github_token"] = token["access_token"]
     session["github_user"] = profile["login"]
-    
+
     return redirect(url_for("repos"))
 
 
@@ -106,12 +121,18 @@ def logout():
 
 ## APPLICATION ROUTES
 
+
 @app.route("/")
 @login_required
 def index():
     environment_statuses = get_status_for_all_environments()
 
-    return render_template("index.html", user=session.get("github_user"), environment_statuses=environment_statuses, repos=config.ALLOWED_REPOS)
+    return render_template(
+        "index.html",
+        user=session.get("github_user"),
+        environment_statuses=environment_statuses,
+        repos=config.ALLOWED_REPOS,
+    )
 
 
 @app.route("/repos")
@@ -127,7 +148,14 @@ def repo_commits(owner, repo):
     commits = github_client.list_commits(session["github_token"], owner, repo)
     environment_statuses = get_status_for_all_environments()
 
-    return render_template("commits.html", user=session.get("github_user"), owner=owner, repo=repo, commits=commits, environment_statuses=environment_statuses)
+    return render_template(
+        "commits.html",
+        user=session.get("github_user"),
+        owner=owner,
+        repo=repo,
+        commits=commits,
+        environment_statuses=environment_statuses,
+    )
 
 
 @app.route("/pull-requests")
@@ -141,10 +169,20 @@ def pull_requests():
 @login_required
 def repo_pull_requests(owner, repo):
     require_allowed_repo(owner, repo)
-    repo_details = next(r for r in config.ALLOWED_REPOS if r["repo"] == f"{owner}/{repo}")
+    repo_details = next(
+        r for r in config.ALLOWED_REPOS if r["repo"] == f"{owner}/{repo}"
+    )
     repo_id = repo_details["id"]
     environment_statuses = get_status_for_all_environments()
-    board = pull_request_board.build_board(session["github_token"], owner, repo, repo_id, environment_statuses)
+    board = pull_request_board.build_board(
+        session["github_token"], owner, repo, repo_id, environment_statuses
+    )
 
-    return render_template("pull_requests.html", user=session.get("github_user"), owner=owner, repo=repo_details, board=board, repos=config.ALLOWED_REPOS)
-
+    return render_template(
+        "pull_requests.html",
+        user=session.get("github_user"),
+        owner=owner,
+        repo=repo_details,
+        board=board,
+        repos=config.ALLOWED_REPOS,
+    )

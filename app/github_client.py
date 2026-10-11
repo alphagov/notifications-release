@@ -1,4 +1,5 @@
 """Thin wrapper around the GitHub REST API for the repos this app is allowed to show."""
+
 import base64
 
 import requests
@@ -25,7 +26,9 @@ def _get(token, path, params=None):
         timeout=10,
     )
     if not response.ok:
-        raise GitHubApiError(response.status_code, response.json().get("message", "GitHub API error"))
+        raise GitHubApiError(
+            response.status_code, response.json().get("message", "GitHub API error")
+        )
     return response.json()
 
 
@@ -62,5 +65,7 @@ def get_contents(token, owner, repo, path=""):
     """Returns a list (directory) or dict (file) as returned by the GitHub contents API."""
     item = _get(token, f"/repos/{owner}/{repo}/contents/{path}")
     if isinstance(item, dict) and item.get("encoding") == "base64":
-        item["decoded_content"] = base64.b64decode(item["content"]).decode("utf-8", errors="replace")
+        item["decoded_content"] = base64.b64decode(item["content"]).decode(
+            "utf-8", errors="replace"
+        )
     return item

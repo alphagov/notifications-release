@@ -4,6 +4,7 @@ A merged PR is placed in the furthest-right environment its merge commit has rea
 determined by ancestry against each environment's deployed SHA (reusing the same
 deployed-SHA data as the commits view).
 """
+
 from typing import Literal, TypedDict
 
 from app import config, github_client
@@ -66,7 +67,9 @@ def build_board(
 ) -> Board:
     board: Board = {column: [] for column in COLUMNS}
 
-    pull_requests: list[PullRequest] = github_client.list_pull_requests(token, owner, repo)
+    pull_requests: list[PullRequest] = github_client.list_pull_requests(
+        token, owner, repo
+    )
 
     head_sha: str | None = None
     try:
@@ -90,7 +93,9 @@ def build_board(
             ahead[env_id] = set()
             continue
         try:
-            comparison = github_client.compare_commits(token, owner, repo, deployed_sha, head_sha)
+            comparison = github_client.compare_commits(
+                token, owner, repo, deployed_sha, head_sha
+            )
             ahead[env_id] = {commit["sha"] for commit in comparison.get("commits", [])}
         except GitHubApiError:
             # Can't determine ancestry for this env; treat as not deployed there.
@@ -109,7 +114,11 @@ def build_board(
         merge_sha = pr.get("merge_commit_sha")
         placed: Column = "merged"
         for env_id in priority:
-            if env_id in ahead and env_id in deployed and merge_sha not in ahead[env_id]:
+            if (
+                env_id in ahead
+                and env_id in deployed
+                and merge_sha not in ahead[env_id]
+            ):
                 if env_id == "staging" or env_id == "production":
                     placed = env_id
                 break

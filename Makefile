@@ -23,5 +23,9 @@ venv:
 	@echo "To run the application, use 'make run'."
 	@echo "----------------------------------------"
 
-test:
+lint:
+	ruff check .
+	ruff format
+
+test: lint
 	pytest -n logical --maxfail=10

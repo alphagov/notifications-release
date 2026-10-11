@@ -24,7 +24,9 @@ def make_environment(environment_id, api_sha=None, admin_sha=None):
     }
 
 
-def test_environment_priority_uses_configured_environments_in_deployment_order(monkeypatch):
+def test_environment_priority_uses_configured_environments_in_deployment_order(
+    monkeypatch,
+):
     monkeypatch.setattr(
         config,
         "ENVIRONMENTS",
@@ -40,13 +42,21 @@ def test_environment_priority_uses_configured_environments_in_deployment_order(m
 
 def test_deployed_sha_selects_the_repository_component():
     cases = [
-        ("notifications-api", make_environment("production", api_sha="api-sha"), "api-sha"),
+        (
+            "notifications-api",
+            make_environment("production", api_sha="api-sha"),
+            "api-sha",
+        ),
         (
             "notifications-admin",
             make_environment("production", admin_sha="admin-sha"),
             "admin-sha",
         ),
-        ("notifications-other", make_environment("production", api_sha="api-sha"), None),
+        (
+            "notifications-other",
+            make_environment("production", api_sha="api-sha"),
+            None,
+        ),
     ]
 
     for repo_id, environment, expected_sha in cases:
@@ -56,9 +66,13 @@ def test_deployed_sha_selects_the_repository_component():
 def test_build_board_groups_pull_requests_by_state_and_deployment(monkeypatch):
     open_pr = make_pull_request(1, "open")
     closed_pr = make_pull_request(2, "closed")
-    production_pr = make_pull_request(3, "closed", "2026-10-10T00:00:00Z", "production-sha")
+    production_pr = make_pull_request(
+        3, "closed", "2026-10-10T00:00:00Z", "production-sha"
+    )
     staging_pr = make_pull_request(4, "closed", "2026-10-09T00:00:00Z", "staging-sha")
-    unreleased_pr = make_pull_request(5, "closed", "2026-10-08T00:00:00Z", "unreleased-sha")
+    unreleased_pr = make_pull_request(
+        5, "closed", "2026-10-08T00:00:00Z", "unreleased-sha"
+    )
 
     monkeypatch.setattr(
         pull_request_board.github_client,
@@ -103,7 +117,9 @@ def test_build_board_groups_pull_requests_by_state_and_deployment(monkeypatch):
     }
 
 
-def test_build_board_keeps_merged_prs_in_merged_column_when_commit_lookup_fails(monkeypatch):
+def test_build_board_keeps_merged_prs_in_merged_column_when_commit_lookup_fails(
+    monkeypatch,
+):
     open_pr = make_pull_request(1, "open")
     merged_pr = make_pull_request(2, "closed", "2026-10-10T00:00:00Z", "merge-sha")
     monkeypatch.setattr(
@@ -136,7 +152,9 @@ def test_build_board_keeps_merged_prs_in_merged_column_when_commit_lookup_fails(
 
 
 def test_build_board_continues_to_staging_when_production_comparison_fails(monkeypatch):
-    merged_pr = make_pull_request(1, "closed", "2026-10-10T00:00:00Z", "staging-merge-sha")
+    merged_pr = make_pull_request(
+        1, "closed", "2026-10-10T00:00:00Z", "staging-merge-sha"
+    )
     monkeypatch.setattr(
         pull_request_board.github_client,
         "list_pull_requests",
