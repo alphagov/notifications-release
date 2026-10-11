@@ -39,7 +39,7 @@ def get_status_for_all_environments() -> list[Environment]:
     for environment in environments:
         conn = None
         try:
-            conn = http.client.HTTPSConnection(environment["url"], context=SSL_CONTEXT)
+            conn = http.client.HTTPSConnection(environment["url"], timeout=5, context=SSL_CONTEXT)
             conn.request("GET", "/_status")
             response = conn.getresponse()
 
