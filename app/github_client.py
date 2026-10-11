@@ -37,12 +37,12 @@ def get_repo(token, owner, repo):
     return _get(token, f"/repos/{owner}/{repo}")
 
 
-@cached(ttl=60, ignore_first_arg=True)
+@cached(ttl=60)
 def list_commits(token, owner, repo):
     return _get(token, f"/repos/{owner}/{repo}/commits", params={"per_page": 30})
 
 
-@cached(ttl=60, ignore_first_arg=True)
+@cached(ttl=60)
 def list_pull_requests(token, owner, repo):
     return _get(
         token,
@@ -51,13 +51,13 @@ def list_pull_requests(token, owner, repo):
     )
 
 
-@cached(ttl=60, ignore_first_arg=True)
+@cached(ttl=60)
 def compare_commits(token, owner, repo, base, head):
     """Returns the GitHub compare payload; response["commits"] are the commits in head but not in base."""
     return _get(token, f"/repos/{owner}/{repo}/compare/{base}...{head}")
 
 
-@cached(ttl=60, ignore_first_arg=True)
+@cached(ttl=60)
 def get_contents(token, owner, repo, path=""):
     """Returns a list (directory) or dict (file) as returned by the GitHub contents API."""
     item = _get(token, f"/repos/{owner}/{repo}/contents/{path}")
