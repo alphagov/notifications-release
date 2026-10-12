@@ -1,0 +1,18 @@
+{% extends "base_template.html" %}
+{% set page_title = "GitHub error" %}
+{% set heading = "We couldn't get data from GitHub" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">There was a problem retrieving this information. Try again shortly. If the problem continues, contact your service team.</p>
+
+        <div class="govuk-inset-text">
+            <p class="govuk-body"><strong>GitHub error {{ status_code }}</strong></p>
+            <p class="govuk-body">{{ message }}</p>
+        </div>
+
+        <a href="{{ url_for('repos') }}" class="govuk-link">Return to repositories</a>
+    </div>
+</div>
+{% endblock %}

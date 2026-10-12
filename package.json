@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "copy-govuk-frontend": "npm run copy-govuk-frontend-js && npm run copy-govuk-frontend-css && npm run copy-govuk-frontend-assets",
+    "copy-govuk-frontend-js": "cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js app/static/govuk/govuk-frontend.min.js && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js.map app/static/govuk/govuk-frontend.min.js.map",
+    "copy-govuk-frontend-css": "cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.css app/static/govuk/govuk-frontend.min.css && cp node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.css.map app/static/govuk/govuk-frontend.min.css.map",
+    "copy-govuk-frontend-assets": "cp -r node_modules/govuk-frontend/dist/govuk/assets app/static/govuk"
+  },
+  "dependencies": {
+    "govuk-frontend": "^6.5.1"
+  }
+}

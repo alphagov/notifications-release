@@ -1,0 +1,56 @@
+{% extends "base_template.html" %}
+{% set page_title = "Home" %}
+{% set heading = "GOVUK Notify Release App" %}
+
+{% block content %}
+<p class="govuk-body-l">Welcome, {{ user }}!</p>
+
+{% if environment_statuses %}
+<h2 class="govuk-heading-m">Environment Statuses</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header">Environment</th>
+      <th class="govuk-table__header">Overall Status</th>
+      <th class="govuk-table__header">Current DB Version</th>
+      <th class="govuk-table__header">API's latest change</th>
+      <th class="govuk-table__header">Admin's latest change</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    {% set api_repo = repos | selectattr("id", "equalto", "notifications-api") | first %}
+    {% set admin_repo = repos | selectattr("id", "equalto", "notifications-admin") | first %}
+    {% for environment in environment_statuses %}
+
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">{{ environment.name }}</td>
+      <td class="govuk-table__cell">{{ environment.status }}</td>
+      <td class="govuk-table__cell">{{ environment.api.db_version or "" }}</td>
+      <td class="govuk-table__cell">
+        {% if environment.api.build_time %}
+          {{ environment.api.build_time | humanize_date }} <br />
+          <a class="govuk-body-s govuk-link" style="color: grey"
+            href="{{ 'https://github.com/' ~ api_repo.repo ~ '/commit/' ~ environment.api.git_commit }}"
+            target="_blank">
+            {{ environment.api.git_commit[:7] }}
+          </a>
+        {% endif %}
+      </td>
+      <td class="govuk-table__cell">
+        {% if environment.admin.build_time %}
+          {{ environment.admin.build_time | humanize_date }} <br />
+          <a class="govuk-body-s govuk-link" style="color: grey"
+            href="{{ 'https://github.com/' ~ admin_repo.repo ~ '/commit/' ~ environment.admin.git_commit }}"
+            target="_blank">{{
+            environment.admin.git_commit[:7] }}</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+{% endblock %}
